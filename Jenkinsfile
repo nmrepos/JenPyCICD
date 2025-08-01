@@ -14,6 +14,9 @@ pipeline {
             volumeMounts:
             - name: pip-cache
               mountPath: /tmp/.pip-cache
+            env:
+            - name: DEBIAN_FRONTEND
+              value: noninteractive
           volumes:
           - name: pip-cache
             emptyDir: {}
@@ -72,6 +75,8 @@ pipeline {
       steps {
         container('python') {
           sh '''
+            echo "=== Installing System Dependencies ==="
+            apt-get update && apt-get install -y binutils
             echo "=== Creating Standalone Executable ==="
             python3 -m PyInstaller --onefile sources/add2vals.py
             echo "=== Build Artifacts ==="
